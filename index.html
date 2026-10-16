@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1 class="title">RETRO ARCADE</h1>
+        <p class="subtitle">Choose a game &bull; Press Play</p>
+    </header>
+
+    <main>
+        <!-- Game Select Screen -->
+        <section id="game-select" class="game-select">
+            <div class="game-card" data-game="snake">
+                <div class="game-icon">🐍</div>
+                <h2>Snake</h2>
+                <p>Eat, grow, survive.</p>
+                <button class="btn-play" onclick="startGame('snake')">PLAY</button>
+            </div>
+            <div class="game-card locked">
+                <div class="game-icon">👾</div>
+                <h2>Invasion</h2>
+                <p>Coming soon...</p>
+            </div>
+            <div class="game-card locked">
+                <div class="game-icon">🏎️</div>
+                <h2>Racer</h2>
+                <p>Coming soon...</p>
+            </div>
+        </section>
+
+        <!-- Game Area -->
+        <section id="game-area" class="game-area hidden">
+            <div id="game-ui">
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="high-score">Best: <span id="high-score">0</span></div>
+                <button id="btn-back" onclick="goBack()">← BACK</button>
+            </div>
+            <div id="game-canvas-wrap">
+                <canvas id="game-canvas" width="400" height="400"></canvas>
+                <div id="game-overlay">
+                    <h2 id="overlay-title">SNAKE</h2>
+                    <p id="overlay-msg">Press SPACE or ENTER to start</p>
+                    <p id="overlay-score" class="overlay-score" style="display:none">Score: 0</p>
+                </div>
+            </div>
+            <div id="controls-hint">
+                <p>Use <strong>Arrow Keys</strong> or <strong>WASD</strong> to move</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Retro Arcade &mdash; Built with Canvas &amp; JS</p>
+    </footer>
+
+    <script src="js/snake.js"></script>
+</body>
+</html>
