@@ -46,14 +46,14 @@ python -m http.server 8080
 
 ## AI Model Details
 
-| Field | Value |
-|-------|-------|
-| **Framework** | [pi](https://github.com/earendil-works/pi-coding-agent) — AI coding agent harness |
-| **Model** | `my-model` (custom/local) |
-| **Provider** | vLLM |
-| **Reasoning Level** | Medium |
-| **Session ID** | `01a145fb-5833-7288-95fb-b1ff5ce372a3` |
-| **Built On** | 2026-10-16 |
+This project was built entirely by an AI coding agent running:
+
+- **Model:** [Qwen3 35B](https://huggingface.co/nvidia/Qwen3.6-35B-A3B-NVFP4) (NVIDIA NVFP4 quantized variant, 35B param / 3B activated MoE)
+- **Serving:** vLLM — `--quantization modelopt --max-model-len 262144`
+- **Tool/Reasoning Parser:** `qwen3` (tool-call + reasoning)
+- **Agent Framework:** [pi](https://github.com/earendil-works/pi-coding-agent) — AI coding agent harness
+- **Session ID:** `01a145fb-5833-7288-95fb-b1ff5ce372a3`
+- **Built On:** 2026-10-16 |
 
 ## License
 
