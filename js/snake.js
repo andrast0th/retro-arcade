@@ -177,10 +177,11 @@ const SnakeGame = (() => {
         direction = { ...nextDirection };
         const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-        // Wall collision
-        if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
-            return gameOver();
-        }
+        // Wall wrapping
+        if (head.x < 0) head.x = COLS - 1;
+        if (head.x >= COLS) head.x = 0;
+        if (head.y < 0) head.y = ROWS - 1;
+        if (head.y >= ROWS) head.y = 0;
 
         // Self collision
         if (snake.some(s => s.x === head.x && s.y === head.y)) {
