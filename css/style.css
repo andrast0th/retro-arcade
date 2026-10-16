@@ -252,11 +252,47 @@ main {
     margin-top: 4px;
 }
 
-/* ===== CONTROLS HINT ===== */
-#controls-hint {
-    font-size: 0.78rem;
-    color: #666;
+/* ===== D-PAD ===== */
+#dpad {
+    display: none;               /* hidden on desktop by default */
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
     margin-top: 4px;
+}
+
+#dpad button {
+    width: 52px;
+    height: 52px;
+    border: 2px solid var(--green-dim);
+    border-radius: 10px;
+    background: var(--dark-card);
+    color: var(--green);
+    font-size: 1.3rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
+}
+
+#dpad button:active {
+    background: var(--green);
+    color: var(--dark);
+}
+
+.dpad-row {
+    display: flex;
+    gap: 4px;
+}
+
+/* Show D-pad on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    #dpad {
+        display: flex;
+    }
+    #controls-hint p:first-child {
+        display: none;
+    }
 }
 
 /* ===== FOOTER ===== */
