@@ -44,12 +44,25 @@
                 <canvas id="game-canvas" width="400" height="400"></canvas>
                 <div id="game-overlay">
                     <h2 id="overlay-title">SNAKE</h2>
-                    <p id="overlay-msg">Press SPACE or ENTER to start</p>
+                    <p id="overlay-msg">Tap canvas or swipe to start</p>
                     <p id="overlay-score" class="overlay-score" style="display:none">Score: 0</p>
+                    <button id="btn-start-game" class="btn-play" style="margin-top:8px">START</button>
                 </div>
             </div>
+
+            <!-- D-Pad (mobile) -->
+            <div id="dpad">
+                <button id="btn-up" aria-label="Up">▲</button>
+                <div class="dpad-row">
+                    <button id="btn-left" aria-label="Left">◄</button>
+                    <button id="btn-down" aria-label="Down">▼</button>
+                    <button id="btn-right" aria-label="Right">►</button>
+                </div>
+            </div>
+
             <div id="controls-hint">
-                <p>Use <strong>Arrow Keys</strong> or <strong>WASD</strong> to move</p>
+                <p>Desktop: <strong>Arrow Keys</strong> / <strong>WASD</strong> / <strong>Click</strong> to start</p>
+                <p>Mobile: <strong>Swipe</strong> / <strong>D-Pad</strong> / <strong>Tap</strong> to start</p>
             </div>
         </section>
     </main>

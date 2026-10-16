@@ -57,6 +57,10 @@ const SnakeGame = (() => {
     const oScore   = document.getElementById('overlay-score');
     const gameArea = document.getElementById('game-area');
 
+    // ---- Mobile touch / swipe state ----
+    let touchStartX = 0, touchStartY = 0;
+    const SWIPE_MIN = 30; // px threshold
+
     // ---- Config ----
     const GRID     = 20;            // cell size in px
     const COLS     = 20;            // grid width  (cells)
@@ -107,7 +111,7 @@ const SnakeGame = (() => {
         scoreEl.textContent = 0;
         overlay.classList.remove('hidden');
         oTitle.textContent  = 'SNAKE';
-        oMsg.textContent    = 'Press SPACE or ENTER to start';
+        oMsg.textContent    = 'Tap canvas or swipe to start';
         oScore.style.display = 'none';
     }
 
@@ -216,7 +220,7 @@ const SnakeGame = (() => {
 
         // Show overlay
         oTitle.textContent  = 'GAME OVER';
-        oMsg.textContent    = 'Press SPACE or ENTER to retry';
+        oMsg.textContent    = 'Tap canvas or button to retry';
         oScore.textContent  = `Score: ${score}`;
         oScore.style.display = 'block';
         overlay.classList.remove('hidden');
@@ -233,14 +237,7 @@ const SnakeGame = (() => {
     function handleKey(e) {
         if (['Space', 'Enter'].includes(e.code)) {
             e.preventDefault();
-            if (!running) {
-                if (!alive) resetGame();
-                running  = true;
-                overlay.classList.add('hidden');
-                sfxStart();
-                timer = setInterval(tick, BASE_SPEED);
-                tick();   // first tick immediately
-            }
+            if (!running) startGameSession();
             return;
         }
 
@@ -266,10 +263,85 @@ const SnakeGame = (() => {
         const dir = map[e.code];
         if (dir) {
             e.preventDefault();
-            // Prevent 180° reversal
-            if (dir.x !== -direction.x || dir.y !== -direction.y) {
-                nextDirection = dir;
-            }
+            setDirection(dir);
+        }
+    }
+
+    // ---- Start game session (shared by key, touch, tap) ----
+    function startGameSession() {
+        ensureAudio();
+        if (!alive) resetGame();
+        running  = true;
+        overlay.classList.add('hidden');
+        sfxStart();
+        timer = setInterval(tick, BASE_SPEED);
+        tick();
+    }
+
+    // ---- Direction setter (180° guard) ----
+    function setDirection(dir) {
+        if (dir.x !== -direction.x || dir.y !== -direction.y) {
+            nextDirection = dir;
+        }
+    }
+
+    // ---- Swipe detection ----
+    canvas.addEventListener('touchstart', e => {
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+        // Tap (short, no movement) to start/restart
+        canvas.addEventListener('touchend', handleTapEnd, { once: true });
+    }, { passive: true });
+
+    function handleTapEnd(e) {
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStartX;
+        const dy = t.clientY - touchStartY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < SWIPE_MIN) {
+            // It's a tap — start/restart game
+            if (!running) startGameSession();
+            return;
+        }
+
+        // Swipe — determine direction
+        if (Math.abs(dx) > Math.abs(dy)) {
+            setDirection(dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 });
+        } else {
+            setDirection(dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 });
+        }
+    }
+
+    // ---- D-Pad button handlers ----
+    function setupDPad() {
+        const btns = {
+            'btn-up':    { x:  0, y: -1 },
+            'btn-down':  { x:  0, y:  1 },
+            'btn-left':  { x: -1, y:  0 },
+            'btn-right': { x:  1, y:  0 },
+        };
+
+        for (const [id, dir] of Object.entries(btns)) {
+            const btn = document.getElementById(id);
+            if (!btn) continue;
+
+            const activate = (e) => {
+                e.preventDefault();
+                ensureAudio();
+                if (!running) startGameSession();
+                setDirection(dir);
+            };
+
+            btn.addEventListener('touchstart', activate, { passive: false });
+            btn.addEventListener('mousedown', activate);
+        }
+
+        // Start/restart button
+        const btnStart = document.getElementById('btn-start-game');
+        if (btnStart) {
+            btnStart.addEventListener('click', startGameSession);
         }
     }
 
@@ -278,6 +350,7 @@ const SnakeGame = (() => {
         gameArea.classList.remove('hidden');
         document.addEventListener('keydown', handleKey);
         init();
+        setupDPad();
     }
 
     function stop() {
