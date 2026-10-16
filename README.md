@@ -1,6 +1,6 @@
 # 🕹️ Retro Arcade
 
-[![Play Live](https://img.shields.io/badge/Play%20Live-https%3A%2F%2Fandrast0th.github.io%2Fretro-arcade%2F-blue)](https://andrast0th.github.io/retro-arcade/)
+[![Play Live](https://img.shields.io/badge/play-live-blue)](https://andrast0th.github.io/retro-arcade/)
 
 A browser-based retro arcade game collection featuring classic games built with HTML5 Canvas and vanilla JavaScript. No frameworks, no dependencies — just pure retro fun.
 
