@@ -68,7 +68,7 @@ const SnakeGame = (() => {
     const BASE_SPEED = 120;         // ms per tick at start
 
     // ---- State ----
-    let snake, direction, nextDirection, food, score, highScore, alive, running, timer;
+    let snake, direction, nextDirection, food, score, highScore, alive, running, timer, lastAppliedDirection = { x: 1, y: 0 };
 
     highScore = parseInt(localStorage.getItem('retro-snake-best') || '0', 10);
     highEl.textContent = highScore;
@@ -174,7 +174,11 @@ const SnakeGame = (() => {
     function tick() {
         if (!alive || !running) return;
 
+        // Apply queued direction change
         direction = { ...nextDirection };
+        lastAppliedDirection = { ...direction };
+        // Reset nextDirection to prevent multiple changes in one tick
+        nextDirection = { ...direction };
         const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
         // Wall wrapping
@@ -281,7 +285,8 @@ const SnakeGame = (() => {
 
     // ---- Direction setter (180° guard) ----
     function setDirection(dir) {
-        if (dir.x !== -direction.x || dir.y !== -direction.y) {
+        // Prevent 180° turns based on last applied direction (not queued direction)
+        if (dir.x !== -lastAppliedDirection.x || dir.y !== -lastAppliedDirection.y) {
             nextDirection = dir;
         }
     }
@@ -294,6 +299,11 @@ const SnakeGame = (() => {
         // Tap (short, no movement) to start/restart
         canvas.addEventListener('touchend', handleTapEnd, { once: true });
     }, { passive: true });
+
+    // Prevent page scrolling during swipe
+    canvas.addEventListener('touchmove', e => {
+        e.preventDefault();
+    }, { passive: false });
 
     function handleTapEnd(e) {
         const t = e.changedTouches[0];
@@ -354,6 +364,10 @@ const SnakeGame = (() => {
         setupDPad();
     }
 
+    function isActive() {
+        return running;
+    }
+
     function stop() {
         document.removeEventListener('keydown', handleKey);
         clearInterval(timer);
@@ -371,14 +385,20 @@ const SnakeGame = (() => {
     return { start, stop, animateIdle };
 })();
 
-// ---- Global wire-up ----
+// ---- Global wire-up (used by index.html onclick handlers) ----
+// eslint-disable-next-line no-unused-vars
 function startGame(name) {
     if (name === 'snake') {
         SnakeGame.start();
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function goBack() {
-    SnakeGame.stop();
+    if (SnakeGame.isActive()) {
+        SnakeGame.stop();
+    } else if (InvasionGame.isActive()) {
+        InvasionGame.stop();
+    }
     document.getElementById('game-area').classList.add('hidden');
 }
